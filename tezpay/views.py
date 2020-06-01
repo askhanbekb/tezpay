@@ -148,7 +148,6 @@ class OrderOfflineView(generics.GenericAPIView):
             price = 0
             for prod in order_list:
                 product_price = Products.objects.get(pk=int(prod["productId"])).price
-                market = Products.objects.get(pk=int(prod["productId"])).market_id
                 price = (product_price * prod["count"]) + price
                 Orders.objects.create(shop_type_id=1,
                                       count=int(prod["count"]),
@@ -166,7 +165,7 @@ class OrderOfflineView(generics.GenericAPIView):
                 price) + "&pg_salt=tezpay_random_string&pg_order=" + str(int(
                 receipt.pk)) + "&pg_description=Заказ продуктов&pg_result_url=" + success_url + str(
                 int(receipt.pk)) + "&pg_sig=" + result.hexdigest() + "&pg_testing_mode=1"
-            Receipts.objects.filter(pk=receipt.pk).update(price=price, market_id=market,
+            Receipts.objects.filter(pk=receipt.pk).update(price=price, market_id=1,
                                                           payed=2, payment_url=payment_get_url)  # Status waiting
 
             del_obj = Delivery.objects.create(receipt_id=receipt.pk)
@@ -188,7 +187,6 @@ class OrderOnlineView(generics.GenericAPIView):
             price = 0
             for prod in order_list:
                 product_price = Products.objects.get(pk=int(prod["productId"])).price
-                market = Products.objects.get(pk=int(prod["productId"])).market_id
                 price = (product_price * prod["count"]) + price
                 Orders.objects.create(shop_type_id=2,
                                       count=int(prod["count"]),
@@ -206,7 +204,7 @@ class OrderOnlineView(generics.GenericAPIView):
                 price) + "&pg_salt=tezpay_random_string&pg_order=" + str(int(
                 receipt.pk)) + "&pg_description=Заказ продуктов&pg_result_url=" + success_url + str(
                 int(receipt.pk)) + "&pg_sig=" + result.hexdigest() + "&pg_testing_mode=1"
-            Receipts.objects.filter(pk=receipt.pk).update(price=price, market_id=market,
+            Receipts.objects.filter(pk=receipt.pk).update(price=price, market_id=1,
                                                           payed=2, payment_url=payment_get_url)  # Status waiting
 
             del_obj = Delivery.objects.create(receipt_id=receipt.pk)
